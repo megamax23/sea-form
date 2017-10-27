@@ -1,0 +1,14 @@
+{
+  "name": "sea-form",
+  "description": "An iron-form that can be submitted by pressing enter",
+  "main": "sea-form.html",
+  "authors": [
+    "xpertsea"
+  ],
+  "license": "Apache-2.0",
+  "keywords": [
+    "polymer",
+    "webcomponent"
+  ],
+  "homepage": "https://github.com/Xpertsea/sea-analytics/"
+}
