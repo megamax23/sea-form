@@ -1,0 +1,16 @@
+{
+  "env": {
+    "mocha": true
+  },
+  "plugins": [
+    "mocha"
+  ],
+  "globals": {
+    "WCT": true,
+    "fixture": false,
+    "replace": true,
+    "flush": true,
+    "expect": false,
+    "sinon": true
+  }
+}

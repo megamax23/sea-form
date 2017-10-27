@@ -1,0 +1,22 @@
+{
+  "root": true,
+  "extends": [
+    "eslint:recommended",
+    "standard"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 6
+  },
+  "env": {
+    "browser": true,
+    "es6": true
+  },
+  "plugins": [
+    "html",
+    "standard"
+  ],
+  "globals": {
+    "Polymer": false,
+    "Sea": true
+  }
+}

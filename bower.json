@@ -1,14 +1,27 @@
 {
   "name": "sea-form",
   "description": "An iron-form that can be submitted by pressing enter",
-  "main": "sea-form.html",
+  "homepage": "https://github.com/Xpertsea/sea-analytics/",
   "authors": [
     "xpertsea"
   ],
   "license": "Apache-2.0",
   "keywords": [
     "polymer",
-    "webcomponent"
+    "webcomponent",
+    "xpertsea",
+    "sea"
   ],
-  "homepage": "https://github.com/Xpertsea/sea-analytics/"
+  "main": "sea-form.html",
+  "dependencies": {
+    "polymer": "Polymer#^2.1.1",
+    "sea-element": "Xpertsea/sea-element#^2.0.0"
+  },
+  "devDependencies": {
+    "dirty-chai": "^2.0.1",
+    "web-component-tester": "^6.3.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.14",
+    "iron-component-page": "PolymerElements/iron-component-page#^3.0.1",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^2.0.0"
+  }
 }

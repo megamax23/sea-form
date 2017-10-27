@@ -1,0 +1,36 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+<dom-module id="sea-form">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h2>Hello [[prop1]]!</h2>
+  </template>
+
+  <script>
+    /**
+     * `sea-form`
+     * An iron-form that can be submitted by pressing enter
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class SeaForm extends Polymer.Element {
+      static get is() { return 'sea-form'; }
+      static get properties() {
+        return {
+          prop1: {
+            type: String,
+            value: 'sea-form'
+          }
+        };
+      }
+    }
+
+    window.customElements.define(SeaForm.is, SeaForm);
+  </script>
+</dom-module>
