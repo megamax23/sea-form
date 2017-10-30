@@ -13,10 +13,23 @@
         href="../../iron-demo-helpers/demo-snippet.html">
   <link rel="import"
         href="../sea-form.html">
+  <link rel="import"
+        href="../sea-form-button.html">
   <custom-style>
     <style is="custom-style"
            include="demo-pages-shared-styles">
+      form {
+        display: flex;
+        flex-direction: column;
+      }
 
+      input {
+        margin: 6px 0 24px;
+      }
+
+      sea-form-button {
+        align-self: flex-end;
+      }
 
     </style>
   </custom-style>
@@ -24,10 +37,28 @@
 
 <body>
   <div class="vertical-section-container centered">
-    <h3>Basic sea-form demo</h3>
+    <h3>You can fill and submit this form by pressing enter, or the submit button.</h3>
     <demo-snippet>
       <template>
-        <sea-form></sea-form>
+        <sea-form>
+          <form>
+            <label for="name">Name</label>
+            <input name="name"
+                   type="text">
+            <label for="sport">Favorite sport</label>
+            <input name="sport"
+                   type="text">
+            <sea-form-button raised
+                             submit>Submit</sea-form-button>
+          </form>
+        </sea-form>
+
+        <script>
+          document.querySelector('sea-form')
+            .addEventListener('sea-form-submitted', (event) => {
+              alert(`Hello ${event.detail.name}, your favorite sport is ${event.detail.sport}.`)
+            })
+        </script>
       </template>
     </demo-snippet>
   </div>

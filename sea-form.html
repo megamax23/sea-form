@@ -14,7 +14,7 @@
       /**
       * # sea-form
       *
-      * **An iron-form that can be submitted by pressing enter**
+      * **An iron-form that can be submitted by pressing enter, or by a sea-form-submit event**
       *
       * Raises a `sea-form-submitted` event on submit, with the serialized form as detail.
       * Native submission is disabled by default but can be enabled.
@@ -46,13 +46,15 @@
         connectedCallback () {
           super.connectedCallback()
           this.addEventListener('keypress', this._submitOnEnter)
-          this.addEventListener('iron-form-presubmit', this._submit)
+          this.addEventListener('sea-form-submit', this._submitOnSeaSubmit)
+          this.addEventListener('iron-form-presubmit', this._submitted)
         }
 
         disconnectedCallback () {
           super.disconnectedCallback()
           this.removeEventListener('keypress', this._submitOnEnter)
-          this.removeEventListener('iron-form-presubmit', this._submit)
+          this.removeEventListener('sea-form-submit', this._submitOnSeaSubmit)
+          this.removeEventListener('iron-form-presubmit', this._submitted)
         }
 
         /**
@@ -69,19 +71,30 @@
         }
 
         /**
+        * Listens for `sea-form-submit` events.
+        *
+        * Submits form.
+        *
+        * @param {CustomEvent} event The `sea-form-submit` event
+        */
+        _submitOnSeaSubmit (event) { this.submit() }
+
+        /**
          * Listens for `iron-form-presubmit` events.
          *
          * Cancels default submission if needed and raises a `sea-form-submitted` event with serialized form as detail.
          *
          * @param {CustomEvent} event The `iron-form-presubmit` event
          */
-        _submit (event) {
+        _submitted (event) {
           if (this.nativeSubmissionEnabled !== true) event.preventDefault()
           this.raise('sea-form-submitted', this.serializeForm())
         }
 
         /**
-        * Raised when an iron-form-presubmit is fired
+        * Raised when form is submitted.
+        *
+        * Contains serialized form in event details.
         *
         * @event sea-form-submitted
         */
