@@ -3,7 +3,17 @@
 [![JavaScript Style Guide](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
 
 # \<sea-form>
-An iron-form that can be submitted by pressing enter
+**An iron-form that can be submitted by pressing enter, or by a sea-form-submit event**
+
+# Usage
+```html
+<sea-form on-sea-form-submitted="...">
+  <form>
+    ...
+    <sea-form-button submit>Submit</sea-form-button>
+  </form>
+</sea-form>
+```
 
 # Add to your app
     bower install --save Xpertsea/sea-form
