@@ -1,36 +1,93 @@
-<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import"
+      href="../polymer/lib/elements/dom-module.html">
+<link rel="import"
+      href="../iron-form/iron-form.html">
+<link rel="import"
+      href="../sea-element/sea-element-mixin.html">
 
 <dom-module id="sea-form">
-  <template>
-    <style>
-      :host {
-        display: block;
-      }
-    </style>
-    <h2>Hello [[prop1]]!</h2>
-  </template>
-
   <script>
-    /**
-     * `sea-form`
-     * An iron-form that can be submitted by pressing enter
-     *
-     * @customElement
-     * @polymer
-     * @demo demo/index.html
-     */
-    class SeaForm extends Polymer.Element {
-      static get is() { return 'sea-form'; }
-      static get properties() {
-        return {
-          prop1: {
-            type: String,
-            value: 'sea-form'
-          }
-        };
-      }
-    }
+    (() => {
+      'use strict'
+      const IronForm = customElements.get('iron-form')
 
-    window.customElements.define(SeaForm.is, SeaForm);
+      /**
+      * # sea-form
+      *
+      * **An iron-form that can be submitted by pressing enter**
+      *
+      * Raises a `sea-form-submitted` event on submit, with the serialized form as detail.
+      * Native submission is disabled by default but can be enabled.
+      *
+      * @polymer
+      * @customElement
+      * @memberof Sea
+      * @extends iron-form
+      * @implements {Sea_ElementMixin}
+      * @demo demo/index.html
+      */
+      Sea.Form = class Form extends Sea.ElementMixin(IronForm) {
+        static get is () { return 'sea-form' }
+
+        static get properties () {
+          return {
+            /**
+            * Wether the native browser form submission is enabled
+            * @type {Boolean}
+            * @default false
+            */
+            nativeSubmissionEnabled: {
+              type: Boolean,
+              value: false
+            }
+          }
+        }
+
+        connectedCallback () {
+          super.connectedCallback()
+          this.addEventListener('keypress', this._submitOnEnter)
+          this.addEventListener('iron-form-presubmit', this._submit)
+        }
+
+        disconnectedCallback () {
+          super.disconnectedCallback()
+          this.removeEventListener('keypress', this._submitOnEnter)
+          this.removeEventListener('iron-form-presubmit', this._submit)
+        }
+
+        /**
+         * Listens for `keypress` events.
+         *
+         * Submits form when key is enter.
+         *
+         * @param {KeyboardEvent} event The `keypress` event
+         */
+        _submitOnEnter (event) {
+          if (event.key !== 'Enter') return
+          event.preventDefault()
+          this.submit()
+        }
+
+        /**
+         * Listens for `iron-form-presubmit` events.
+         *
+         * Cancels default submission if needed and raises a `sea-form-submitted` event with serialized form as detail.
+         *
+         * @param {CustomEvent} event The `iron-form-presubmit` event
+         */
+        _submit (event) {
+          if (this.nativeSubmissionEnabled !== true) event.preventDefault()
+          this.raise('sea-form-submitted', this.serializeForm())
+        }
+
+        /**
+        * Raised when an iron-form-presubmit is fired
+        *
+        * @event sea-form-submitted
+        */
+      }
+
+      customElements.define(Sea.Form.is, Sea.Form)
+    })()
   </script>
 </dom-module>

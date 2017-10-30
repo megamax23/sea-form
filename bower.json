@@ -15,7 +15,8 @@
   "main": "sea-form.html",
   "dependencies": {
     "polymer": "Polymer#^2.1.1",
-    "sea-element": "Xpertsea/sea-element#^2.0.0"
+    "sea-element": "Xpertsea/sea-element#^2.0.0",
+    "iron-form": "PolymerElements/iron-form#^2.0.1"
   },
   "devDependencies": {
     "dirty-chai": "^2.0.1",

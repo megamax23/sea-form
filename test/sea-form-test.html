@@ -1,52 +1,115 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-    <title>sea-form test</title>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport"
+        content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+  <title>sea-form</title>
+  <script src="../../webcomponentsjs/webcomponents-loader.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
+  <link rel="import"
+        href="../sea-form.html">
+</head>
 
-    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-    <script src="../../web-component-tester/browser.js"></script>
+<body>
 
-    <link rel="import" href="../sea-form.html">
-  </head>
-  <body>
+  <test-fixture id="default">
+    <template>
+      <sea-form>
+        <form>
+          <input name="input1"
+                 type="text"
+                 value="someValue1">
+          <input name="input2"
+                 type="text"
+                 value="someValue2">
+        </form>
+      </sea-form>
+    </template>
+  </test-fixture>
 
-    <test-fixture id="BasicTestFixture">
-      <template>
-        <sea-form></sea-form>
-      </template>
-    </test-fixture>
+  <script>
+    describe('sea-form', () => {
+      let component
+      beforeEach(() => { component = fixture('default') })
 
-    <test-fixture id="ChangedPropertyTestFixture">
-      <template>
-        <sea-form prop1="new-prop1"></sea-form>
-      </template>
-    </test-fixture>
+      context('when pressing a key', () => {
+        const pressKey = (key) => { component.dispatchEvent(new KeyboardEvent('keypress', { key })) }
 
-    <script>
-      suite('sea-form', () => {
+        let submitMethod
+        beforeEach(() => { submitMethod = sinon.stub(component, 'submit') })
 
-        test('instantiating the element with default properties works', () => {
-          const element = fixture('BasicTestFixture');
-          assert.equal(element.prop1, 'sea-form');
-          const elementShadowRoot = element.shadowRoot;
-          const elementHeader = elementShadowRoot.querySelector('h2');
-          assert.equal(elementHeader.innerHTML, 'Hello sea-form!');
-        });
+        afterEach(() => { submitMethod.reset() })
 
-        test('setting a property on the element works', () => {
-          // Create a test fixture
-          const element = fixture('ChangedPropertyTestFixture');
-          assert.equal(element.prop1, 'new-prop1');
-          const elementShadowRoot = element.shadowRoot;
-          const elementHeader = elementShadowRoot.querySelector('h2');
-          assert.equal(elementHeader.innerHTML, 'Hello new-prop1!');
-        });
+        context('when key is Enter', () => {
+          it('submits the form', (done) => {
+            component.addEventListener('keypress', () => {
+              expect(submitMethod).to.have.been.called()
+              done()
+            })
 
-      });
-    </script>
+            pressKey('Enter')
+          })
+        })
 
-  </body>
+        context('when the key is not Enter', () => {
+          it('does not submit the form', (done) => {
+            component.addEventListener('keypress', () => {
+              expect(submitMethod).to.not.have.been.called()
+              done()
+            })
+
+            pressKey('Space')
+          })
+        })
+      })
+
+      context('when an iron-form-presubmit event is raised', () => {
+        const ironFormPresubmit = () => {
+          component.dispatchEvent(new CustomEvent('iron-form-presubmit', {
+            composed: true,
+            bubbles: true,
+            cancelable: true
+          }))
+        }
+
+        it('raises a sea-form-submitted event with the serialized form as detail', (done) => {
+          component.addEventListener('sea-form-submitted', (event) => {
+            expect(event.detail).to.be.deep.equal(component.serializeForm())
+            done()
+          })
+
+          ironFormPresubmit()
+        })
+
+        context('when native form submission is disabled', () => {
+          it('prevents the event\'s default', (done) => {
+            component.addEventListener('iron-form-presubmit', (event) => {
+              expect(event.defaultPrevented).to.be.true()
+              done()
+            })
+
+            ironFormPresubmit()
+          })
+        })
+
+        context('when native form submission is enabled', () => {
+          beforeEach(() => { component.set('nativeSubmissionEnabled', true) })
+
+          it('does no prevent the event\'s default', (done) => {
+            component.addEventListener('iron-form-presubmit', (event) => {
+              expect(event.defaultPrevented).to.be.false()
+              done()
+            })
+
+            ironFormPresubmit()
+          })
+        })
+      })
+    })
+  </script>
+
+</body>
+
 </html>
