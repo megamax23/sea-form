@@ -5,8 +5,8 @@
   <meta charset="utf-8">
   <meta name="viewport"
         content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
-  <title>sea-form demo</title>
-  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <title>sea-form elements demo</title>
+  <script src="../../webcomponentsjs/webcomponents-loader.js"></script>
   <link rel="import"
         href="../../iron-demo-helpers/demo-pages-shared-styles.html">
   <link rel="import"
@@ -15,6 +15,10 @@
         href="../sea-form.html">
   <link rel="import"
         href="../sea-form-button.html">
+  <link rel="import"
+        href="../sea-match-password-validator.html">
+  <link rel="import"
+        href="../../paper-input/paper-input.html">
   <custom-style>
     <style is="custom-style"
            include="demo-pages-shared-styles">
@@ -27,6 +31,7 @@
         margin: 6px 0 24px;
       }
 
+      button,
       sea-form-button {
         align-self: flex-end;
       }
@@ -37,10 +42,10 @@
 
 <body>
   <div class="vertical-section-container centered">
-    <h3>You can fill and submit this form by pressing enter, or the submit button.</h3>
+    <h3>You can submit this form by pressing enter, or a native button.</h3>
     <demo-snippet>
       <template>
-        <sea-form>
+        <sea-form id="form1">
           <form>
             <label for="name">Name</label>
             <input name="name"
@@ -48,16 +53,74 @@
             <label for="sport">Favorite sport</label>
             <input name="sport"
                    type="text">
+            <button>Submit</button>
+          </form>
+        </sea-form>
+
+        <script>
+          document.getElementById('form1')
+            .addEventListener('sea-form-submitted', (event) => {
+              alert(`Hello ${event.detail.name}, your favorite sport is ${event.detail.sport}.`)
+            })
+        </script>
+      </template>
+    </demo-snippet>
+  </div>
+
+  <div class="vertical-section-container centered">
+    <h3>A sea-form-button with a submit attribute set will submit a sea-form</h3>
+    <demo-snippet>
+      <template>
+        <sea-form id="form2">
+          <form>
+            <label for="name">Name</label>
+            <input name="name"
+                   type="text">
+            <label for="car">Favorite car</label>
+            <input name="car"
+                   type="text">
             <sea-form-button raised
                              submit>Submit</sea-form-button>
           </form>
         </sea-form>
 
         <script>
-          document.querySelector('sea-form')
+          document.getElementById('form2')
             .addEventListener('sea-form-submitted', (event) => {
-              alert(`Hello ${event.detail.name}, your favorite sport is ${event.detail.sport}.`)
+              alert(`Hello ${event.detail.name}, your favorite car is ${event.detail.car}.`)
             })
+        </script>
+      </template>
+    </demo-snippet>
+  </div>
+
+  <div class="vertical-section-container centered">
+    <h3>The sea-validator-mixin can help you implement your own custom form validators, like the included sea-match-password-validator</h3>
+    <demo-snippet>
+      <template>
+        <sea-match-password-validator></sea-match-password-validator>
+        <sea-form id="form3">
+          <form>
+            <paper-input name="newPassword"
+                         label="New password"
+                         type="password"></paper-input>
+            <paper-input name="confirmNewPassword"
+                         label="Confirm new password"
+                         type="password"
+                         validator="sea-match-password-validator"
+                         error-message="Passwords don't match."></paper-input>
+            <sea-form-button raised
+                             submit>Submit</sea-form-button>
+          </form>
+        </sea-form>
+
+        <script>
+          const validator = document.querySelector('sea-match-password-validator')
+          const form3 = document.getElementById('form3')
+          const newPasswordInput = form3.querySelector('paper-input')
+
+          newPasswordInput.addEventListener('value-changed', (value) => { validator.set('password', newPasswordInput.value) })
+          form3.addEventListener('sea-form-submitted', (event) => { alert('Your password matched!') })
         </script>
       </template>
     </demo-snippet>

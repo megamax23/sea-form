@@ -25,6 +25,7 @@
       * @memberof Sea
       * @extends paper-button
       * @implements { Sea.ElementMixin, Polymer.GestureEventListeners }
+      * @demo demo/index.html
       */
       Sea.FormButton = class FormButton extends
         Polymer.GestureEventListeners(
@@ -59,6 +60,7 @@
          * Listens for `tap` gesture events.
          *
          * If submit is true, raises a `sea-form-submit` event.
+         * @return
          */
         _raiseSubmit () { if (this.submit === true) this.raise('sea-form-submit') }
 

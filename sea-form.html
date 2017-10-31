@@ -76,6 +76,7 @@
         * Submits form.
         *
         * @param {CustomEvent} event The `sea-form-submit` event
+        * @return
         */
         _submitOnSeaSubmit (event) { this.submit() }
 
@@ -85,6 +86,7 @@
          * Cancels default submission if needed and raises a `sea-form-submitted` event with serialized form as detail.
          *
          * @param {CustomEvent} event The `iron-form-presubmit` event
+         * @return
          */
         _submitted (event) {
           if (this.nativeSubmissionEnabled !== true) event.preventDefault()
