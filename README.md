@@ -3,9 +3,10 @@
 [![JavaScript Style Guide](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
 
 # \<sea-form>
-**An iron-form that can be submitted by pressing enter, or by a sea-form-submit event**
+**[iron-form](https://www.webcomponents.org/element/PolymerElements/iron-form) based elements that add the missing convenience you were looking for in modern forms**
 
 # Usage
+The `sea-form` and `sea-form-button` elements go well together for any kind of forms:
 ```html
 <sea-form on-sea-form-submitted="...">
   <form>
@@ -13,6 +14,27 @@
     <sea-form-button submit>Submit</sea-form-button>
   </form>
 </sea-form>
+```
+
+The `sea-validator-mixin` can be used to implement your own custom validators, like the included `sea-match-password-validator`:
+```html
+<sea-match-password-validator password="[[newPassword]]"></sea-match-password-validator>
+<sea-form>
+  <form>
+    <paper-input name="newPassword"
+                 label="New password"
+                 type="password"
+                 value="{{newPassword}}"></paper-input>
+    <paper-input name="confirmNewPassword"
+                 label="Confirm new password"
+                 type="password"
+                 validator="sea-match-password-validator"
+                 error-message="Passwords don't match."></paper-input>
+    <sea-form-button raised
+                     submit>Submit</sea-form-button>
+  </form>
+</sea-form>
+
 ```
 
 # Add to your app

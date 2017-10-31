@@ -1,6 +1,6 @@
 {
   "name": "sea-form",
-  "description": "An iron-form that can be submitted by pressing enter",
+  "description": "iron-form based elements that add the missing convenience you were looking for in modern forms",
   "homepage": "https://github.com/Xpertsea/sea-analytics/",
   "authors": [
     "xpertsea"

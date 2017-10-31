@@ -1,7 +1,7 @@
 {
   "name": "sea-form",
   "version": "1.0.0",
-  "description": "An iron-form that can be submitted by pressing enter",
+  "description": "iron-form based elements that add the missing convenience you were looking for in modern forms",
   "repository": "https://github.com/Xpertsea/sea-form.git",
   "author": "xpertsea",
   "license": "Apache-2.0",
