@@ -29,6 +29,18 @@
     </template>
   </test-fixture>
 
+  <test-fixture id="dirty-check">
+    <template>
+      <sea-form dirty-check="true">
+        <form>
+          <input name="input1"
+                 type="text"
+                 value="someValue1">
+        </form>
+      </sea-form>
+    </template>
+  </test-fixture>
+
   <script>
     describe('sea-form', () => {
       let component
@@ -74,11 +86,8 @@
           }))
         }
 
-        it('raises a sea-form-submitted event with the serialized form as detail', (done) => {
-          component.addEventListener('sea-form-submitted', (event) => {
-            expect(event.detail).to.be.deep.equal(component.serializeForm())
-            done()
-          })
+        it('raises a sea-form-submitted event', (done) => {
+          component.addEventListener('sea-form-submitted', (event) => done())
 
           ironFormPresubmit()
         })
@@ -104,6 +113,44 @@
             })
 
             ironFormPresubmit()
+          })
+        })
+      })
+
+      context('when dirty checking is enabled', () => {
+        beforeEach(() => { component = fixture('dirty-check') })
+
+        context('when submitting the form', () => {
+          context('and no inputs have changed', () => {
+            it('does not raise a sea-form-submitted event', () => {
+              const spy = sinon.spy()
+              component.addEventListener('sea-form-submitted', spy)
+
+              component.submit()
+
+              expect(spy).to.not.have.been.called()
+            })
+          })
+
+          context('and inputs have changed', () => {
+            let input, eventDetailWithNewValue
+            let newValue = 'newValue'
+
+            beforeEach(() => {
+              input = component.querySelector('input[name="input1"]')
+
+              eventDetailWithNewValue = { input1: newValue }
+
+              input.setAttribute('value', newValue)
+            })
+
+            it('sends the changed values', () => {
+              component.addEventListener('sea-form-submitted', (event) => {
+                expect(event.detail).to.deep.equal(eventDetailWithNewValue)
+              })
+
+              component.submit()
+            })
           })
         })
       })
