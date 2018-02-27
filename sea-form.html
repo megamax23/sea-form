@@ -102,13 +102,12 @@
          */
         _submitted (event) {
           if (this.nativeSubmissionEnabled !== true) event.preventDefault()
+          if (!this.dirtyCheck) {
+            return this.raise('sea-form-submitted', this.serializeForm())
+          }
 
-          if (this.dirtyCheck) {
-            if (this._hasChanged()) {
-              this.raise('sea-form-submitted', this._getChangedValues())
-            }
-          } else {
-            this.raise('sea-form-submitted', this.serializeForm())
+          if (this._hasChanged()) {
+            this.raise('sea-form-submitted', this._getChangedValues())
           }
         }
 
