@@ -55,7 +55,7 @@
         connectedCallback () {
           super.connectedCallback()
           if (this.dirtyCheck) {
-            this._initialState = JSON.parse(JSON.stringify(this.serializeForm()))
+            this._initialState = Object.assign({}, this.serializeForm())
           }
           this.addEventListener('keypress', this._submitOnEnter)
           this.addEventListener('sea-form-submit', this._submitOnSeaSubmit)
