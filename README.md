@@ -37,6 +37,15 @@ The `sea-validator-mixin` can be used to implement your own custom validators, l
 
 ```
 
+The `sea-form` supports dirty checking. When providing the `dirty-check` attribute, the form will only collect values that the user has changed.
+```html
+<sea-form dirty-check>
+    <form>
+        ...
+    </form>
+</sea-form>
+```
+
 # Add to your app
     bower install --save Xpertsea/sea-form
 
