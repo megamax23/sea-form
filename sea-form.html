@@ -48,6 +48,12 @@
             dirtyCheck: {
               type: Boolean,
               value: false
+            },
+
+            isDirty: {
+              type: Boolean,
+              notify: true,
+              value: false
             }
           }
         }
@@ -56,6 +62,7 @@
           super.connectedCallback()
           if (this.dirtyCheck) {
             this._initialState = Object.assign({}, this.serializeForm())
+            this.addEventListener('input', this._onInput)
           }
           this.addEventListener('keypress', this._submitOnEnter)
           this.addEventListener('sea-form-submit', this._submitOnSeaSubmit)
@@ -64,6 +71,9 @@
 
         disconnectedCallback () {
           super.disconnectedCallback()
+          if (this.dirtyCheck) {
+            this.removeEventListener('input', this._onInput)
+          }
           this.removeEventListener('keypress', this._submitOnEnter)
           this.removeEventListener('sea-form-submit', this._submitOnSeaSubmit)
           this.removeEventListener('iron-form-presubmit', this._submitted)
@@ -109,6 +119,10 @@
           if (this._hasChanged()) {
             this.raise('sea-form-submitted', this._getChangedValues())
           }
+        }
+
+        _onInput (event) {
+          this.set('isDirty', this._hasChanged())
         }
 
         _hasChanged () {
