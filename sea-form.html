@@ -49,14 +49,17 @@
               type: Boolean,
               value: false
             },
-
-            _initialValues: Object,
-
+            /**
+            * Whether the form is dirty or not
+            * @type {Boolean}
+            * @default false
+            */
             isDirty: {
               type: Boolean,
               notify: true,
               value: false
-            }
+            },
+            _initialValues: Object
           }
         }
 
