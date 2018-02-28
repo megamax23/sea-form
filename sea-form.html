@@ -83,7 +83,7 @@
         }
 
         _snapshotInitialValues () {
-          this.set('_initialValues', this.serializeForm())
+          this.set('_initialValues', Object.assign({}, this.serializeForm()))
         }
 
         /**
