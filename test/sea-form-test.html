@@ -151,6 +151,22 @@
           })
         })
 
+        context('when a form is dirty', () => {
+          beforeEach(() => {
+            component.set('isDirty', true)
+          })
+
+          context('when setAsClean', () => {
+            beforeEach(() => {
+              component.setAsClean()
+            })
+
+            it('becomes not dirty', () => {
+              expect(component.isDirty).to.be.false()
+            })
+          })
+        })
+
         context('when submitting the form', () => {
           context('and no inputs have changed', () => {
             it('does not raise a sea-form-submitted event', () => {

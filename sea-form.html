@@ -50,6 +50,8 @@
               value: false
             },
 
+            _initialValues: Object,
+
             isDirty: {
               type: Boolean,
               notify: true,
@@ -60,10 +62,8 @@
 
         connectedCallback () {
           super.connectedCallback()
-          if (this.dirtyCheck) {
-            this._initialState = Object.assign({}, this.serializeForm())
-            this.addEventListener('input', this._onInput)
-          }
+          if (this.dirtyCheck) this._snapshotInitialValues()
+          this.addEventListener('input', this._onInput)
           this.addEventListener('keypress', this._submitOnEnter)
           this.addEventListener('sea-form-submit', this._submitOnSeaSubmit)
           this.addEventListener('iron-form-presubmit', this._submitted)
@@ -71,12 +71,19 @@
 
         disconnectedCallback () {
           super.disconnectedCallback()
-          if (this.dirtyCheck) {
-            this.removeEventListener('input', this._onInput)
-          }
+          this.removeEventListener('input', this._onInput)
           this.removeEventListener('keypress', this._submitOnEnter)
           this.removeEventListener('sea-form-submit', this._submitOnSeaSubmit)
           this.removeEventListener('iron-form-presubmit', this._submitted)
+        }
+
+        setAsClean () {
+          this._snapshotInitialValues()
+          this.set('isDirty', false)
+        }
+
+        _snapshotInitialValues () {
+          this.set('_initialValues', this.serializeForm())
         }
 
         /**
@@ -127,14 +134,14 @@
 
         _hasChanged () {
           const formData = this.serializeForm()
-          return JSON.stringify(this._initialState) !== JSON.stringify(formData)
+          return JSON.stringify(this._initialValues) !== JSON.stringify(formData)
         }
 
         _getChangedValues () {
           const values = this.serializeForm()
           const newValues = {}
-          Object.keys(this._initialState).forEach((key) => {
-            if (this._initialState[key] !== values[key]) {
+          Object.keys(this._initialValues).forEach((key) => {
+            if (this._initialValues[key] !== values[key]) {
               newValues[key] = values[key]
             }
           })
