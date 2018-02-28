@@ -15,6 +15,17 @@ The `sea-form` and `sea-form-button` elements go well together for any kind of f
   </form>
 </sea-form>
 ```
+The `sea-form` supports dirty checking. When `dirty-check` is set, submitting the form will only collect changed values.
+```html
+<sea-form dirty-check>
+    <form>
+        ...
+    </form>
+</sea-form>
+```
+
+When `dirty-check` is set, calling the `setAsClean()` method will take a snapshot of the current form values and use them as reference to compute if the form `isDirty` or not.
+
 
 The `sea-validator-mixin` can be used to implement your own custom validators, like the included `sea-match-password-validator`:
 ```html
@@ -34,19 +45,7 @@ The `sea-validator-mixin` can be used to implement your own custom validators, l
                      submit>Submit</sea-form-button>
   </form>
 </sea-form>
-
 ```
-
-The `sea-form` supports dirty checking. When providing the `dirty-check` attribute, the form will only collect values that the user has changed.
-```html
-<sea-form dirty-check>
-    <form>
-        ...
-    </form>
-</sea-form>
-```
-
-When `dirty-check` is enabled, you can call a `setAsClean()` method that will take a snapshot of the current values from which the dirty checking is compared to.
 
 # Add to your app
     bower install --save Xpertsea/sea-form
