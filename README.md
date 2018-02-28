@@ -46,6 +46,8 @@ The `sea-form` supports dirty checking. When providing the `dirty-check` attribu
 </sea-form>
 ```
 
+When `dirty-check` is enabled, you can call a `setAsClean()` method that will take a snapshot of the current values from which the dirty checking is compared to.
+
 # Add to your app
     bower install --save Xpertsea/sea-form
 
