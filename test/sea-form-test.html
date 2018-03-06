@@ -212,7 +212,7 @@
         })
       })
 
-      context('when containing an number input', () => {
+      context('when containing a number input', () => {
         context('when serializeForm', () => {
           let serializedInputs
           beforeEach((done) => {
@@ -225,7 +225,7 @@
             })
           })
 
-          it('serializes the number input to number', () => {
+          it('serializes the number input value is a number', () => {
             expect(serializedInputs.numberInput).to.be.deep.equal(10)
           })
         })
