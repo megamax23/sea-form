@@ -102,6 +102,14 @@
           this.submit()
         }
 
+        _serializeInputValues (element) {
+          if (element.type.toLowerCase() === 'number') {
+            return [parseFloat(element.value)]
+          }
+
+          return super._serializeInputValues(element)
+        }
+
         /**
         * Listens for `sea-form-submit` events.
         *
