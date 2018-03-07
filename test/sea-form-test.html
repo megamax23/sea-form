@@ -41,6 +41,18 @@
     </template>
   </test-fixture>
 
+  <test-fixture id="with-number-input">
+    <template>
+      <sea-form>
+        <form>
+          <input type="number"
+                 name="numberInput"
+                 value="10">
+        </form>
+      </sea-form>
+    </template>
+  </test-fixture>
+
   <script>
     describe('sea-form', () => {
       let component
@@ -196,6 +208,25 @@
 
               component.submit()
             })
+          })
+        })
+      })
+
+      context('when containing a number input', () => {
+        context('when serializeForm', () => {
+          let serializedInputs
+          beforeEach((done) => {
+            component = fixture('with-number-input')
+
+            flush(() => {
+              serializedInputs = component.serializeForm()
+
+              done()
+            })
+          })
+
+          it('serializes the number input value is a number', () => {
+            expect(serializedInputs.numberInput).to.be.deep.equal(10)
           })
         })
       })
