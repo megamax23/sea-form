@@ -173,25 +173,6 @@
               expect(component.isDirty).to.be.false()
             })
           })
-
-          context('and raises a iron-select event', () => {
-            let componentWithIronSelect, ironSelect
-            context('with a different value', () => {
-              beforeEach(() => {
-                replace('input').with('fake-iron-select')
-
-                componentWithIronSelect = fixture('with-iron-select')
-
-                ironSelect = componentWithIronSelect.querySelector('fake-iron-select')
-                ironSelect.value = 'newvalue'
-                ironSelect.dispatchEvent(new CustomEvent('iron-select', { bubbles: true, composed: true }))
-              })
-
-              it('becomes dirty', () => {
-                expect(componentWithIronSelect.isDirty).to.be.true()
-              })
-            })
-          })
         })
 
         context('when a form is dirty', () => {
