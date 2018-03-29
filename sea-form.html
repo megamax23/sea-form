@@ -66,7 +66,8 @@
         connectedCallback () {
           super.connectedCallback()
           if (this.dirtyCheck) this._snapshotInitialValues()
-          this.addEventListener('input', this._onInput)
+          this.addEventListener('change', this._onChange)
+          this.addEventListener('input', this._onChange)
           this.addEventListener('keypress', this._submitOnEnter)
           this.addEventListener('sea-form-submit', this._submitOnSeaSubmit)
           this.addEventListener('iron-form-presubmit', this._submitted)
@@ -74,7 +75,8 @@
 
         disconnectedCallback () {
           super.disconnectedCallback()
-          this.removeEventListener('input', this._onInput)
+          this.removeEventListener('change', this._onChange)
+          this.removeEventListener('input', this._onChange)
           this.removeEventListener('keypress', this._submitOnEnter)
           this.removeEventListener('sea-form-submit', this._submitOnSeaSubmit)
           this.removeEventListener('iron-form-presubmit', this._submitted)
@@ -139,7 +141,7 @@
           }
         }
 
-        _onInput (event) {
+        _onChange (event) {
           this.set('isDirty', this._hasChanged())
         }
 

@@ -161,6 +161,17 @@
               expect(component.isDirty).to.be.false()
             })
           })
+
+          context('with a change event', () => {
+            beforeEach(() => {
+              input.setAttribute('value', 'newValue')
+              input.dispatchEvent(new Event('change', { composed: true, bubbles: true }))
+            })
+
+            it('becomes dirty', () => {
+              expect(component.isDirty).to.be.true()
+            })
+          })
         })
 
         context('when a form is dirty', () => {
