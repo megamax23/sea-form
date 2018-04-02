@@ -172,6 +172,17 @@
               expect(component.isDirty).to.be.true()
             })
           })
+
+          context('with an iron-select event', () => {
+            beforeEach(() => {
+              input.setAttribute('value', 'newValue')
+              input.dispatchEvent(new CustomEvent('iron-select', { composed: true, bubbles: true }))
+            })
+
+            it('becomes dirty', () => {
+              expect(component.isDirty).to.be.true()
+            })
+          })
         })
 
         context('when a form is dirty', () => {
