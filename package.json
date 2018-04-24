@@ -24,6 +24,7 @@
     "postinstall": "bower install",
     "doc": "polymer analyze > analysis.json && polymer serve -o",
     "lint": "eslint **/** --quiet && polymer lint",
-    "test": "yarn run lint && polymer test"
+    "pretest": "yarn run lint",
+    "test": "polymer test"
   }
 }

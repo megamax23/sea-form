@@ -1,7 +1,10 @@
 {
+  "compile": "never",
   "clientOptions": {
     "environmentScripts": [
-      "stacky/browser.js",
+      "stacky/lib/parsing.js",
+      "stacky/lib/formatting.js",
+      "stacky/lib/normalization.js",
       "mocha/mocha.js",
       "chai/chai.js",
       "sinonjs/sinon.js",
