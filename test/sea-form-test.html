@@ -10,6 +10,8 @@
   <script src="../../web-component-tester/browser.js"></script>
   <link rel="import"
         href="../sea-form.html">
+  <link rel="import"
+        href="../../paper-input/paper-input.html">
 </head>
 
 <body>
@@ -18,36 +20,27 @@
     <template>
       <sea-form>
         <form>
-          <input name="input1"
-                 type="text"
-                 value="someValue1">
-          <input name="input2"
-                 type="text"
-                 value="someValue2">
+          <paper-input name="input1"
+                       type="text"
+                       value="someValue1"></paper-input>
+          <paper-input name="input2"
+                       type="number"
+                       value="5"></paper-input>
         </form>
       </sea-form>
     </template>
   </test-fixture>
 
-  <test-fixture id="dirty-check">
+  <test-fixture id="dirty-submit-only">
     <template>
-      <sea-form dirty-check>
+      <sea-form dirty-submit-only>
         <form>
-          <input name="input1"
-                 type="text"
-                 value="someValue1">
-        </form>
-      </sea-form>
-    </template>
-  </test-fixture>
-
-  <test-fixture id="with-number-input">
-    <template>
-      <sea-form>
-        <form>
-          <input type="number"
-                 name="numberInput"
-                 value="10">
+          <paper-input name="input1"
+                       type="text"
+                       value="someValue1"></paper-input>
+          <paper-input name="input2"
+                       type="number"
+                       value="5"></paper-input>
         </form>
       </sea-form>
     </template>
@@ -55,209 +48,158 @@
 
   <script>
     describe('sea-form', () => {
-      let component
-      beforeEach(() => { component = fixture('default') })
+      describe('a default form', () => {
+        let component, submitMethod
+        beforeEach(() => {
+          component = fixture('default')
+          submitMethod = sinon.stub(component, 'submit')
+        })
 
-      context('when pressing a key', () => {
-        const pressKey = (key) => { component.dispatchEvent(new KeyboardEvent('keypress', { key })) }
+        const pressKey = key => component.dispatchEvent(new KeyboardEvent('keypress', { key }))
 
-        let submitMethod
-        beforeEach(() => { submitMethod = sinon.stub(component, 'submit') })
-
-        afterEach(() => { submitMethod.reset() })
-
-        context('when key is Enter', () => {
-          it('submits the form', (done) => {
-            component.addEventListener('keypress', () => {
-              expect(submitMethod).to.have.been.called()
-              done()
-            })
-
+        context('when Enter is pressed', () => {
+          beforeEach(() => {
             pressKey('Enter')
           })
+
+          it('is submitted', () => {
+            expect(submitMethod).to.have.been.called()
+          })
         })
 
-        context('when the key is not Enter', () => {
-          it('does not submit the form', (done) => {
-            component.addEventListener('keypress', () => {
-              expect(submitMethod).to.not.have.been.called()
-              done()
-            })
-
+        context('when any other key is pressed', () => {
+          beforeEach(() => {
             pressKey('Space')
           })
-        })
-      })
 
-      context('when an iron-form-presubmit event is raised', () => {
-        const ironFormPresubmit = () => {
-          component.dispatchEvent(new CustomEvent('iron-form-presubmit', {
-            composed: true,
-            bubbles: true,
-            cancelable: true
-          }))
-        }
-
-        it('raises a sea-form-submitted event', (done) => {
-          component.addEventListener('sea-form-submitted', (event) => done())
-
-          ironFormPresubmit()
-        })
-
-        context('when native form submission is disabled', () => {
-          it('prevents the event\'s default', (done) => {
-            component.addEventListener('iron-form-presubmit', (event) => {
-              expect(event.defaultPrevented).to.be.true()
-              done()
-            })
-
-            ironFormPresubmit()
+          it('is never submitted', () => {
+            expect(submitMethod).to.not.have.been.called()
           })
         })
 
-        context('when native form submission is enabled', () => {
-          beforeEach(() => { component.set('nativeSubmissionEnabled', true) })
-
-          it('does no prevent the event\'s default', (done) => {
-            component.addEventListener('iron-form-presubmit', (event) => {
-              expect(event.defaultPrevented).to.be.false()
-              done()
-            })
-
-            ironFormPresubmit()
-          })
-        })
-      })
-
-      context('when dirty checking is enabled', () => {
-        let input, initialValue
-
-        beforeEach(() => {
-          component = fixture('dirty-check')
-
-          input = component.querySelector('input[name="input1"]')
-          initialValue = input.value
-
-          _enterValue(input, initialValue)
-        })
-
-        context('when an input change', () => {
-          context('with a different value', () => {
-            beforeEach(() => {
-              _enterValue(input, 'newValue')
-            })
-
-            it('becomes dirty', () => {
-              expect(component.isDirty).to.be.true()
-            })
-          })
-
-          context('with its initial value', () => {
-            beforeEach(() => {
-              _enterValue(input, initialValue)
-            })
-
-            it('becomes not dirty', () => {
-              expect(component.isDirty).to.be.false()
-            })
-          })
-
-          context('with a change event', () => {
-            beforeEach(() => {
-              input.setAttribute('value', 'newValue')
-              input.dispatchEvent(new Event('change', { composed: true, bubbles: true }))
-            })
-
-            it('becomes dirty', () => {
-              expect(component.isDirty).to.be.true()
-            })
-          })
-
-          context('with an iron-select event', () => {
-            beforeEach(() => {
-              input.setAttribute('value', 'newValue')
-              input.dispatchEvent(new CustomEvent('iron-select', { composed: true, bubbles: true }))
-            })
-
-            it('becomes dirty', () => {
-              expect(component.isDirty).to.be.true()
-            })
-          })
-        })
-
-        context('when a form is dirty', () => {
+        context('when form is submitted', () => {
           beforeEach(() => {
-            component.set('isDirty', true)
+            submitMethod.restore()
           })
 
-          context('when setAsClean', () => {
+          it('raises a sea-form-submitted event with all values', (done) => {
+            component.addEventListener('sea-form-submitted', (event) => {
+              expect(event.detail).to.be.deep.equal({
+                input1: 'someValue1',
+                input2: 5
+              })
+
+              done()
+            })
+
+            flush(() => { component.submit() })
+          })
+        })
+
+        describe('dirty-checking', () => {
+          it('is initially not dirty', () => {
+            expect(component.isDirty).to.be.false()
+          })
+
+          context('when changing an input\'s value', () => {
+            let input, initialValue
+            beforeEach((done) => {
+              input = component.querySelector('paper-input')
+              initialValue = input.value
+              input.set('value', 'some changed value')
+              flush(done)
+            })
+
+            it('becomes dirty', () => {
+              expect(component.isDirty).to.be.true()
+            })
+
+            context('when changing it back', () => {
+              beforeEach((done) => {
+                input.set('value', initialValue)
+                flush(done)
+              })
+
+              it('is not dirty anymore', () => {
+                expect(component.isDirty).to.be.false()
+              })
+            })
+
+            context('when setting as clean', () => {
+              beforeEach(() => {
+                component.setAsClean()
+              })
+
+              it('is not dirty anymore', () => {
+                expect(component.isDirty).to.be.false()
+              })
+            })
+          })
+        })
+      })
+
+      describe('a dirty-submit-only form', () => {
+        let component
+        beforeEach(() => {
+          component = fixture('dirty-submit-only')
+        })
+
+        context('when no value has changed', () => {
+          context('when submitted', () => {
+            it('raises a sea-form-submitted event with nothing', (done) => {
+              component.addEventListener('sea-form-submitted', (event) => {
+                expect(event.detail).to.be.deep.equal({})
+                done()
+              })
+
+              flush(() => { component.submit() })
+            })
+          })
+        })
+
+        context('when a value has changed', () => {
+          const editedFieldValue = 'some changed value'
+
+          let input
+          beforeEach((done) => {
+            input = component.querySelector('[name=input1]')
+            input.set('value', editedFieldValue)
+            flush(done)
+          })
+
+          context('when submitted', () => {
+            it('raises a sea-form-submitted event with only the changed value', (done) => {
+              component.addEventListener('sea-form-submitted', (event) => {
+                expect(event.detail).to.be.deep.equal({
+                  [input.name]: editedFieldValue
+                })
+
+                done()
+              })
+
+              flush(() => { component.submit() })
+            })
+          })
+
+          context('when setting as clean', () => {
             beforeEach(() => {
               component.setAsClean()
             })
 
-            it('becomes not dirty', () => {
-              expect(component.isDirty).to.be.false()
-            })
-          })
-        })
+            context('when submitted', () => {
+              it('raises a sea-form-submitted event with nothing', (done) => {
+                component.addEventListener('sea-form-submitted', (event) => {
+                  expect(event.detail).to.be.deep.equal({})
+                  done()
+                })
 
-        context('when submitting the form', () => {
-          context('and no inputs have changed', () => {
-            it('does not raise a sea-form-submitted event', () => {
-              const spy = sinon.spy()
-              component.addEventListener('sea-form-submitted', spy)
-
-              component.submit()
-
-              expect(spy).to.not.have.been.called()
-            })
-          })
-
-          context('and inputs have changed', () => {
-            let eventDetailWithNewValue
-            let newValue = 'newValue'
-
-            beforeEach(() => {
-              eventDetailWithNewValue = { input1: newValue }
-
-              _enterValue(input, newValue)
-            })
-
-            it('sends the changed values', () => {
-              component.addEventListener('sea-form-submitted', (event) => {
-                expect(event.detail).to.deep.equal(eventDetailWithNewValue)
+                flush(() => { component.submit() })
               })
-
-              component.submit()
             })
-          })
-        })
-      })
-
-      context('when containing a number input', () => {
-        context('when serializeForm', () => {
-          let serializedInputs
-          beforeEach((done) => {
-            component = fixture('with-number-input')
-
-            flush(() => {
-              serializedInputs = component.serializeForm()
-
-              done()
-            })
-          })
-
-          it('serializes the number input value is a number', () => {
-            expect(serializedInputs.numberInput).to.be.deep.equal(10)
           })
         })
       })
     })
-
-    function _enterValue (input, value) {
-      input.setAttribute('value', value)
-      input.dispatchEvent(new Event('input', { composed: true, bubbles: true }))
-    }
   </script>
 
 </body>
