@@ -125,16 +125,15 @@
        *
        * Manageable inputs must have:
        *   - A `name` attribute
-       *   - A `value` attribute (and a dispatch a bubbling & composed `value-changed` event)
+       *   - A notifying `value` property
        *   - A `validate` function
        *
        * @return
        */
       _registerInputs () {
-        const elements = this.querySelectorAll('[name][value]')
-        const inputs = Array.from(elements).filter(e => e.validate)
+        const inputs = Array.from(this.querySelectorAll('[name]')).filter(e => e.validate)
+        inputs.forEach(i => i.addEventListener('value-changed', event => this._inputChanged(event)))
         this.set('_registeredInputs', inputs)
-        inputs.forEach(i => i.addEventListener('value-changed', (event) => this._inputChanged(event)))
         this.setAsClean()
       }
 
