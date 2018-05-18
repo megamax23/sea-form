@@ -52,48 +52,90 @@
       const pressKey = key => component.dispatchEvent(new KeyboardEvent('keypress', { key }))
 
       let component, input1, input2
-      describe('a default form', () => {
-        let submitMethod
-        beforeEach((done) => {
+      describe('a basic form', () => {
+        beforeEach(() => {
           component = fixture('default')
-          submitMethod = sinon.stub(component, 'submit')
           input1 = component.querySelector('[name=input1]')
           input2 = component.querySelector('[name=input2]')
-          flush(done)
         })
 
-        context('when Enter is pressed', () => {
+        describe('its submission methods', () => {
+          let submitMethod
           beforeEach(() => {
-            pressKey('Enter')
+            submitMethod = sinon.stub(component, 'submit')
           })
 
-          it('is submitted', () => {
-            expect(submitMethod).to.have.been.called()
-          })
-        })
-
-        context('when any other key is pressed', () => {
-          beforeEach(() => {
-            pressKey('Space')
-          })
-
-          it('is never submitted', () => {
-            expect(submitMethod).to.not.have.been.called()
-          })
-        })
-
-        context('when form is submitted', () => {
-          beforeEach(() => {
-            submitMethod.restore()
-          })
-
-          it('raises a sea-form-submitted event with all values', (done) => {
-            component.addEventListener('sea-form-submitted', (event) => {
-              expect(event.detail).to.be.deep.equal({ input1: value1, input2: value2 })
-              done()
+          context('when Enter is pressed', () => {
+            beforeEach(() => {
+              pressKey('Enter')
             })
 
-            component.submit()
+            it('is submitted', () => {
+              expect(submitMethod).to.have.been.called()
+            })
+          })
+
+          context('when any other key is pressed', () => {
+            beforeEach(() => {
+              pressKey('Space')
+            })
+
+            it('is never submitted', () => {
+              expect(submitMethod).to.not.have.been.called()
+            })
+          })
+
+          context('when form is submitted', () => {
+            beforeEach(() => {
+              submitMethod.restore()
+            })
+
+            it('raises a sea-form-submitted event with all values', (done) => {
+              component.addEventListener('sea-form-submitted', (event) => {
+                expect(event.detail).to.be.deep.equal({ input1: value1, input2: value2 })
+                done()
+              })
+
+              component.submit()
+            })
+          })
+        })
+
+        describe('its new input registration', () => {
+          context('when registering a new input', () => {
+            const newInputValue = 'newValue'
+
+            let formNode, newInput
+            beforeEach((done) => {
+              newInput = document.createElement('paper-input')
+              newInput.setAttribute('name', 'new')
+              formNode = component.querySelector('form')
+              formNode.appendChild(newInput)
+              newInput.set('value', newInputValue)
+              flush(() => {
+                component.registerInput({ input: newInput })
+                flush(done)
+              })
+            })
+
+            it('does not dirty the form', () => {
+              expect(component.isDirty).to.be.false()
+            })
+
+            context('when submitting the form', () => {
+              it('raises a sea-form-submitted event including the new input\'s value', (done) => {
+                component.addEventListener('sea-form-submitted', (event) => {
+                  expect(event.detail).to.be.deep.equal({
+                    input1: value1,
+                    input2: value2,
+                    new: newInputValue
+                  })
+                  done()
+                })
+
+                component.submit()
+              })
+            })
           })
         })
 
@@ -125,9 +167,19 @@
               })
             })
 
-            context('when setting as clean', () => {
+            context('when setting all form as clean', () => {
               beforeEach(() => {
                 component.setAsClean()
+              })
+
+              it('is not dirty anymore', () => {
+                expect(component.isDirty).to.be.false()
+              })
+            })
+
+            context('when setting the dirty input as clean', () => {
+              beforeEach(() => {
+                component.setInputAsClean({ input: input1 })
               })
 
               it('is not dirty anymore', () => {

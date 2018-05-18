@@ -82,6 +82,12 @@
         super.ready()
       }
 
+      connectedCallback () {
+        this._registeredInputs = []
+        this._initialValues = {}
+        super.connectedCallback()
+      }
+
       /**
        * Registers an input
        *
@@ -115,6 +121,19 @@
       setAsClean () {
         const currentValues = this.__serializeInputs({ inputs: this._registeredInputs })
         this.setProperties({ isDirty: false, _initialValues: currentValues })
+      }
+
+      /**
+      * Sets registred input's current value as its initial value
+      *
+      * @param {Object.HtmlElement} input The input to set as clean
+      * @return
+      */
+      setInputAsClean ({ input }) {
+        if (!this._registeredInputs.includes(input)) return
+        const currentValue = this.__serializeInput({ input })
+        this.set('_initialValues', Object.assign({}, this._initialValues, currentValue))
+        this._updateDirtiness()
       }
 
       /**
@@ -188,6 +207,16 @@
       }
 
       /**
+       * Updates the `isDirty` property.
+       *
+       * @return
+       */
+      _updateDirtiness () {
+        const isDirty = this.__isFormDirty({ initialValues: this._initialValues, inputs: this._registeredInputs })
+        this.setProperties({ isDirty })
+      }
+
+      /**
        * Listens for `value-changed` events.
        *
        * Updates the `isDirty` property.
@@ -196,8 +225,7 @@
        * @return
        */
       _inputChanged (event) {
-        const isDirty = this.__isFormDirty({ initialValues: this._initialValues, inputs: this._registeredInputs })
-        this.setProperties({ isDirty })
+        this._updateDirtiness()
       }
 
       __isFormDirty ({ initialValues = {}, inputs = [] }) {
