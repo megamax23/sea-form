@@ -74,17 +74,15 @@
         }
       }
 
-      ready () {
+      connectedCallback () {
         this.addEventListener('keypress', this._submitOnEnter)
         this.addEventListener('sea-form-submit', this._submitOnSeaSubmit)
         this.addEventListener('iron-form-presubmit', this._submitted)
-        this._registerAllInputs()
-        super.ready()
-      }
 
-      connectedCallback () {
         this._registeredInputs = []
         this._initialValues = {}
+        this._registerAllInputs()
+
         super.connectedCallback()
       }
 
