@@ -74,20 +74,43 @@
         }
       }
 
-      connectedCallback () {
-        super.connectedCallback()
+      ready () {
         this.addEventListener('keypress', this._submitOnEnter)
         this.addEventListener('sea-form-submit', this._submitOnSeaSubmit)
         this.addEventListener('iron-form-presubmit', this._submitted)
-        this._registerInputs()
+        this._registerAllInputs()
+        super.ready()
       }
 
-      disconnectedCallback () {
-        super.disconnectedCallback()
-        this.removeEventListener('keypress', this._submitOnEnter)
-        this.removeEventListener('sea-form-submit', this._submitOnSeaSubmit)
-        this.removeEventListener('iron-form-presubmit', this._submitted)
-        this._registeredInputs.forEach(i => i.removeEventListener('value-changed', this._inputChanged))
+      connectedCallback () {
+        this._registeredInputs = []
+        this._initialValues = {}
+        super.connectedCallback()
+      }
+
+      /**
+       * Registers an input
+       *
+       * Registerable inputs must have:
+       *   - A `name` attribute
+       *   - A notifying `value` property
+       *   - A `validate` function
+       *
+       * @param {Object.HtmlElement} input The input to register
+       * @return
+       */
+      registerInput ({ input }) {
+        if (!input ||
+          !input.hasAttribute('name') ||
+          !('value' in input) ||
+          !input.validate) {
+          throw new Error(`Input unregisterable: ${input}`)
+        }
+
+        const serializedInput = this.__serializeInput({ input })
+        this.set('_initialValues', Object.assign({}, this._initialValues, serializedInput))
+        this.push('_registeredInputs', input)
+        input.addEventListener('value-changed', event => this._inputChanged(event))
       }
 
       /**
@@ -96,8 +119,21 @@
        * @return
        */
       setAsClean () {
-        const _initialValues = this.__serializeInputs({ inputs: this._registeredInputs })
-        this.setProperties({ isDirty: false, _initialValues })
+        const currentValues = this.__serializeInputs({ inputs: this._registeredInputs })
+        this.setProperties({ isDirty: false, _initialValues: currentValues })
+      }
+
+      /**
+      * Sets registred input's current value as its initial value
+      *
+      * @param {Object.HtmlElement} input The input to set as clean
+      * @return
+      */
+      setInputAsClean ({ input }) {
+        if (!this._registeredInputs.includes(input)) return
+        const currentValue = this.__serializeInput({ input })
+        this.set('_initialValues', Object.assign({}, this._initialValues, currentValue))
+        this._updateDirtiness()
       }
 
       /**
@@ -113,28 +149,25 @@
         return Object
           .entries(currentValues)
           .filter(entry => {
-            const name = entry[0]
-            const value = entry[1]
+            const [name, value] = entry
             return JSON.stringify(value) !== JSON.stringify(this._initialValues[name])
           })
-          .reduce((dirtyValues, entry) => Object.assign(dirtyValues, { [entry[0]]: entry[1] }), {})
+          .reduce((dirtyValues, entry) => {
+            const [name, value] = entry
+            return Object.assign(dirtyValues, { [name]: value })
+          }, {})
       }
 
       /**
-       * Registers all manageable inputs in the form
-       *
-       * Manageable inputs must have:
-       *   - A `name` attribute
-       *   - A notifying `value` property
-       *   - A `validate` function
+       * Registers all inputs in the form
        *
        * @return
        */
-      _registerInputs () {
-        const inputs = Array.from(this.querySelectorAll('[name]')).filter(e => e.validate)
-        inputs.forEach(i => i.addEventListener('value-changed', event => this._inputChanged(event)))
-        this.set('_registeredInputs', inputs)
-        this.setAsClean()
+      _registerAllInputs () {
+        Array
+          .from(this.querySelectorAll('[name]'))
+          .filter(element => element.validate && 'value' in element)
+          .forEach(element => this.registerInput({ input: element }))
       }
 
       /**
@@ -174,6 +207,16 @@
       }
 
       /**
+       * Updates the `isDirty` property.
+       *
+       * @return
+       */
+      _updateDirtiness () {
+        const isDirty = this.__isFormDirty({ initialValues: this._initialValues, inputs: this._registeredInputs })
+        this.setProperties({ isDirty })
+      }
+
+      /**
        * Listens for `value-changed` events.
        *
        * Updates the `isDirty` property.
@@ -182,8 +225,7 @@
        * @return
        */
       _inputChanged (event) {
-        const isDirty = this.__isFormDirty({ initialValues: this._initialValues, inputs: this._registeredInputs })
-        this.set('isDirty', isDirty)
+        this._updateDirtiness()
       }
 
       __isFormDirty ({ initialValues = {}, inputs = [] }) {
@@ -198,9 +240,22 @@
       }
 
       __serializeInput ({ input }) {
-        let value = input.value
-        if (input.type && input.type.toLowerCase() === 'number') {
-          value = parseFloat(input.value)
+        let value
+        const inputType = (input.type || '').toLowerCase()
+        switch (inputType) {
+          case 'number': {
+            value = [undefined, null, ''].includes(input.value)
+              ? null
+              : parseFloat(input.value)
+            break
+          }
+
+          case 'text': {
+            value = input.value != null ? input.value : ''
+            break
+          }
+
+          default: { value = input.value }
         }
 
         return { [input.name]: value }
