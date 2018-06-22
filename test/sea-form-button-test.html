@@ -6,10 +6,12 @@
   <meta name="viewport"
         content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
   <title>sea-form-button</title>
-  <script src="../../webcomponentsjs/webcomponents-loader.js"></script>
-  <script src="../../web-component-tester/browser.js"></script>
-  <link rel="import"
-        href="../sea-form-button.html">
+  <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+  <script src="../node_modules/web-component-tester/browser.js"></script>
+  <script type="module"
+          src="../sea-form-button.js"></script>
+  <!-- The following import is required while this issue exists: https://github.com/Polymer/tools/issues/525 -->
+  <script src="../node_modules/dirty-chai/lib/dirty-chai.js"></script>
 </head>
 
 <body>
@@ -20,7 +22,7 @@
     </template>
   </test-fixture>
 
-  <script>
+  <script type="module">
     describe('sea-form-button', () => {
       let component
       beforeEach(() => { component = fixture('default') })

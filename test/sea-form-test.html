@@ -6,12 +6,12 @@
   <meta name="viewport"
         content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
   <title>sea-form</title>
-  <script src="../../webcomponentsjs/webcomponents-loader.js"></script>
-  <script src="../../web-component-tester/browser.js"></script>
-  <link rel="import"
-        href="../sea-form.html">
-  <link rel="import"
-        href="../../paper-input/paper-input.html">
+  <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+  <script src="../node_modules/web-component-tester/browser.js"></script>
+  <!-- The following import is required while this issue exists: https://github.com/Polymer/tools/issues/525 -->
+  <script src="../node_modules/dirty-chai/lib/dirty-chai.js"></script>
+  <script type="module"
+          src="../sea-form.js"></script>
 </head>
 
 <body>
@@ -44,7 +44,9 @@
     </template>
   </test-fixture>
 
-  <script>
+  <script type="module">
+    import '@polymer/paper-input/paper-input.js'
+
     describe('sea-form', () => {
       const value1 = 'someValue1'
       const value2 = 5

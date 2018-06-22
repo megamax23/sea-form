@@ -18,6 +18,11 @@ notifications:
     rooms:
       - secure: Vr2OPasXPGa89CD2jbFHFZT5ugifJJsAyKmYZre4QsyWbwdSyQaQIXg6ZC60mzfJCJA/MY8fYEuuL3iE0RE6WWGa2NEdIiWibvLdXgy5zd9wvKKuU1KZOggI+EYaz3S3lb+Vw+VV5iGEFD8i8DH3gcUyX6cxVTlvTYPKJXvVcGh5IpfRxGkI4Ln9+Q1oWeDMG/bB2pchllK02X52Ceq5bI0kUNdXt78ARj8QXIL738Qn6YfmpDxaATpHlq9spkHG4e/VTBdMWNRt5/uMK1CgS4zayLMyxvTm2qBemQopr7eCsx2CFi5x5slpWOs4KNNssXTzIKJp6CxkVkhtIpFQOVsDfzjAAM0lUKPc/Jifvnds7ddikKLfvPxtZRlMjkGNJqS/wBwqRs2zzD639/E5q3c3OQEqZtcsQfIQLb/BbD8bYM2fYw/6WPT6kjnhARLznI4rgzKdd4x33ixIoePBuYu5IpLCI7rPyJjRvjvmZluOp5sjQUfnMvG7XEiALuWjKQ0bVCtY0z8wnkScVHCCHpdan+JxJJ+cM+oWpQkFZkQtz63LAFiteCOwxcx+NMWywVJVWE1qFMoSR9rmcUC0Q77UzjewRzxmbYwg6qFZzXk3MbYwNz8JJwiTlECYUdSg/gqjNBpfJd/QJlqHBXDZUiMW163G+NBLImwf5WkUepo=
     template:
-      - "<https://github.com/%{repository_slug}|%{repository_name}> (%{branch}) \nBuild <%{build_url}|#%{build_number}> %{result} in %{duration}. \nCommit <%{compare_url}|%{commit}> by %{author}\n %{commit_subject}"
+      - |-
+        <https://github.com/%{repository_slug}|%{repository_name}> (%{branch})
+        Build <%{build_url}|#%{build_number}> %{result} in %{duration}.
+        Commit <%{compare_url}|%{commit}> by %{author}
+         %{commit_subject}
     on_success: change
     on_failure: always
+
