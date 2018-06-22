@@ -1,17 +1,6 @@
 {
   "compile": "never",
-  "clientOptions": {
-    "environmentScripts": [
-      "stacky/lib/parsing.js",
-      "stacky/lib/formatting.js",
-      "stacky/lib/normalization.js",
-      "mocha/mocha.js",
-      "chai/chai.js",
-      "sinonjs/sinon.js",
-      "sinon-chai/lib/sinon-chai.js",
-      "dirty-chai/lib/dirty-chai.js"
-    ]
-  },
+  "npm": true,
   "plugins": {
     "local": {
       "browsers": [
