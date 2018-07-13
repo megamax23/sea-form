@@ -78,6 +78,7 @@
         this.addEventListener('keypress', this._submitOnEnter)
         this.addEventListener('sea-form-submit', this._submitOnSeaSubmit)
         this.addEventListener('iron-form-presubmit', this._submitted)
+        this.addEventListener('iron-form-reset', this._resetted)
 
         this._registeredInputs = []
         this._initialValues = {}
@@ -202,6 +203,13 @@
       _submitted (event) {
         event.preventDefault()
         this.raise('sea-form-submitted', this.serializeForm())
+      }
+
+      /**
+       * Resets to default values
+       */
+      _resetted (event) {
+        this._registeredInputs.forEach(input => input.value = this._initialValues[input.name])
       }
 
       /**

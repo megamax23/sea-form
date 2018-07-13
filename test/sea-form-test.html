@@ -187,6 +187,13 @@
               })
             })
 
+            context('when reset', () => {
+              it('resets to original value', () => {
+                component.reset()
+                expect(input1.value).to.equal(initialValue)
+              })
+            })
+
             context('when value is array', () => {
               let arrayValue
               beforeEach((done) => {
