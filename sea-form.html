@@ -256,7 +256,36 @@
           default: { value = input.value }
         }
 
-        return { [input.name]: value }
+        return { [input.name]: this.__recursiveDeepCopy(value) }
+      }
+
+      __recursiveDeepCopy (o) {
+        var newO, i
+
+        if (typeof o !== 'object') {
+          return o
+        }
+        if (!o) {
+          return o
+        }
+
+        if (o instanceof Date) return new Date(o.valueOf())
+
+        if (Object.prototype.toString.apply(o) === '[object Array]') {
+          newO = []
+          for (i = 0; i < o.length; i += 1) {
+            newO[i] = this.__recursiveDeepCopy(o[i])
+          }
+          return newO
+        }
+
+        newO = {}
+        for (i in o) {
+          if (o.hasOwnProperty(i)) {
+            newO[i] = this.__recursiveDeepCopy(o[i])
+          }
+        }
+        return newO
       }
 
       /**
