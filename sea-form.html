@@ -52,6 +52,15 @@
             value: false
           },
 
+          /** \
+           * Whether the form is submittable
+           */
+          isSubmittable: {
+            type: Boolean,
+            notify: true,
+            computed: '_computeIsSubmittable(dirtySubmitOnly, isDirty)'
+          },
+
           /**
           * The list of registered inputs
           * @type {Array}
@@ -179,7 +188,9 @@
       _submitOnEnter (event) {
         if (event.key !== 'Enter') return
         event.preventDefault()
-        this.submit()
+        if (this.isSubmittable) {
+          this.submit()
+        }
       }
 
       /**
@@ -203,6 +214,10 @@
       _submitted (event) {
         event.preventDefault()
         this.raise('sea-form-submitted', this.serializeForm())
+      }
+
+      _computeIsSubmittable (dirtySubmitOnly, isDirty) {
+        return isDirty || !dirtySubmitOnly
       }
 
       /**

@@ -66,11 +66,18 @@
           })
 
           context('when Enter is pressed', () => {
-            beforeEach(() => {
-              pressKey('Enter')
+            context('when submitting dirty changes and not dirty', () => {
+              it('is not submitted', () => {
+                component.dirtySubmitOnly = true
+                pressKey('Enter')
+
+                expect(submitMethod).to.not.have.been.called()
+              })
             })
 
             it('is submitted', () => {
+              pressKey('Enter')
+
               expect(submitMethod).to.have.been.called()
             })
           })
