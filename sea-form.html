@@ -302,7 +302,7 @@
           return newO
         }
 
-        newO = {}
+        newO = Object.create(Object.getPrototypeOf(o))
         for (i in o) {
           if (o.hasOwnProperty(i)) {
             newO[i] = this.__recursiveDeepCopy(o[i])
