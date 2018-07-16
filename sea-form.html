@@ -57,6 +57,7 @@
            */
           isSubmittable: {
             type: Boolean,
+            notify: true,
             computed: '_computeIsSubmittable(dirtySubmitOnly, isDirty)'
           },
 
