@@ -186,6 +186,28 @@
                 expect(component.isDirty).to.be.false()
               })
             })
+
+            context('when reset', () => {
+              it('resets to original value', () => {
+                component.reset()
+                expect(input1.value).to.equal(initialValue)
+              })
+            })
+
+            context('when value is array', () => {
+              let arrayValue
+              beforeEach((done) => {
+                arrayValue = [{}, {}]
+                input1.set('value', arrayValue)
+                component.setInputAsClean({ input: input1 })
+                flush(done)
+              })
+
+              it('deep copies the array', () => {
+                input1.push('value', {})
+                expect(component.isDirty).to.be.true()
+              })
+            })
           })
         })
       })

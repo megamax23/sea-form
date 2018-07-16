@@ -14,7 +14,7 @@
   ],
   "main": "sea-form.html",
   "dependencies": {
-    "iron-form": "PolymerElements/iron-form#2.2.1",
+    "iron-form": "PolymerElements/iron-form#2.4.0",
     "iron-meta": "PolymerElements/iron-meta#^2.0.3",
     "paper-button": "PolymerElements/paper-button#^2.0.0",
     "polymer": "Polymer#^2.1.1",
